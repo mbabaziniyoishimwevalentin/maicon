@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Portal | Kigali Urban Trends on Maicon</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Zero-Flash Pre-render Critical CSS and Synchronous Script -->
+  <style id="base-seller-tab-style">
+    #seller-tab-dashboard, #seller-tab-products, #seller-tab-orders, #seller-tab-wallet {
+      display: none;
+    }
+  </style>
+  <script>
+    (function() {
+      const validTabs = ['dashboard', 'products', 'orders', 'wallet'];
+      const hashTab = (window.location.hash || '').replace('#', '').toLowerCase();
+      const savedTab = localStorage.getItem('maicon_seller_tab');
+      const initialTab = validTabs.includes(hashTab) ? hashTab : (validTabs.includes(savedTab) ? savedTab : 'dashboard');
+      window.__INITIAL_SELLER_TAB__ = initialTab;
+
+      document.write('<style id="sync-seller-active-style">' +
+        '#seller-tab-' + initialTab + '{ display: block !important; } ' +
+        '#nav-' + initialTab + '{ background-color: #0f172a !important; color: #ffffff !important; } ' +
+        '#nav-' + initialTab + ' i { color: #34d399 !important; }' +
+      '</style>');
+    })();
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex selection:bg-emerald-500 selection:text-white">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 min-h-screen shadow-sm">
+    <div>
+      <!-- Brand Logo -->
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <span class="w-8 h-8 rounded-lg bg-slate-900 text-white font-black flex items-center justify-center text-sm shadow-md">M</span>
+          <div>
+            <span class="font-bold text-base tracking-tight text-slate-900 block">MAICON</span>
+            <span class="text-[10px] font-bold text-emerald-600 tracking-wider uppercase block">Merchant Hub</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-4 space-y-1">
+        <button 
+          onclick="switchSellerTab('dashboard')" 
+          id="nav-dashboard"
+          class="seller-nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="store" class="w-4 h-4 text-slate-400"></i>
+            <span>Store Overview</span>
+          </div>
+        </button>
+
+        <button 
+          onclick="switchSellerTab('products')" 
+          id="nav-products"
+          class="seller-nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="package" class="w-4 h-4 text-slate-400"></i>
+            <span>Inventory & Products</span>
+          </div>
+          <span id="seller-product-count" class="px-2 py-0.5 text-[10px] rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200">24</span>
+        </button>
+
+        <button 
+          onclick="switchSellerTab('orders')" 
+          id="nav-orders"
+          class="seller-nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
+            <span>Orders & Fulfillment</span>
+          </div>
+          <span id="seller-pending-orders-count" class="px-2 py-0.5 text-[10px] rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-200">1</span>
+        </button>
+
+        <button 
+          onclick="switchSellerTab('wallet')" 
+          id="nav-wallet"
+          class="seller-nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
+            <span>MoMo Payout Wallet</span>
+          </div>
+        </button>
+
+        <a 
+          href="/" 
+          class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+          <span>View Public Storefront</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Seller Profile & Logout -->
+    <div class="p-4 border-t border-slate-100">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Seller" class="w-9 h-9 rounded-lg object-cover" />
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-900 truncate">Kigali Urban Trends</p>
+          <p class="text-[10px] text-emerald-600 font-bold">Verified Merchant (TIN-98234)</p>
+        </div>
+        <button onclick="localStorage.removeItem('maicon_user'); window.location.href='/login';" title="Logout" class="text-slate-400 hover:text-red-600 p-1.5 transition-colors">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 min-h-screen overflow-y-auto">
+    <!-- Header Bar -->
+    <header class="h-16 px-8 bg-white border-b border-slate-200 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+      <div class="flex items-center gap-3">
+        <h2 id="seller-page-title" class="text-base font-bold text-slate-900"><script>document.write(({'dashboard':'Store Overview','products':'Inventory & Products','orders':'Orders & Fulfillment','wallet':'MoMo Payout Wallet'})[window.__INITIAL_SELLER_TAB__ || 'dashboard']);</script></h2>
+        <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200">Verified Store ✓</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button 
+          onclick="openAddProductModal()" 
+          class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all">
+          <i data-lucide="plus" class="w-4 h-4 text-emerald-400"></i>
+          <span>+ Add New Product</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sub-View 1: Store Overview -->
+    <section id="seller-tab-dashboard" class="p-8 space-y-6 hidden">
+      
+      <!-- Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-slate-500 mb-2">
+            <span class="text-xs font-semibold">Total Store Revenue</span>
+            <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i>
+          </div>
+          <p id="seller-kpi-revenue" class="text-2xl font-black text-slate-900">618,000 RWF</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1">Paid directly via MTN MoMo / Cards</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-slate-500 mb-2">
+            <span class="text-xs font-semibold">Available for MoMo Withdrawal</span>
+            <i data-lucide="wallet" class="w-4 h-4 text-cyan-600"></i>
+          </div>
+          <p id="seller-kpi-available" class="text-2xl font-black text-cyan-600">450,000 RWF</p>
+          <p class="text-[11px] text-slate-500 font-medium mt-1">Ready for instant payout</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-slate-500 mb-2">
+            <span class="text-xs font-semibold">Active Inventory Listings</span>
+            <i data-lucide="layers" class="w-4 h-4 text-amber-600"></i>
+          </div>
+          <p id="seller-kpi-products" class="text-2xl font-black text-slate-900">24 Items</p>
+          <p class="text-[11px] text-amber-600 font-semibold mt-1">Across 10 life categories</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between text-slate-500 mb-2">
+            <span class="text-xs font-semibold">Pending Fulfillment</span>
+            <i data-lucide="clock" class="w-4 h-4 text-purple-600"></i>
+          </div>
+          <p id="seller-kpi-orders" class="text-2xl font-black text-purple-600">1 Order</p>
+          <p class="text-[11px] text-slate-500 font-medium mt-1">Pack and ship today</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions Banner -->
+      <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 rounded-2xl border border-slate-700 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div>
+          <h3 class="text-base font-bold">Expand your store with new arrivals in RWF</h3>
+          <p class="text-xs text-slate-300 mt-1">Reach thousands of active shoppers across Kigali and nationwide in Rwanda.</p>
+        </div>
+        <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg transition-all flex-shrink-0">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Add New Product Listing</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Sub-View 2: Inventory & Products -->
+    <section id="seller-tab-products" class="p-8 space-y-6 hidden">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Store Inventory Catalog</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Manage stock levels, sizes, colors, and prices in RWF</p>
+          </div>
+          <button onclick="openAddProductModal()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 transition-all">
+            <i data-lucide="plus" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>+ Add Product</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Item Details</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4">Price (RWF)</th>
+                <th class="py-3 px-4">Stock Left</th>
+                <th class="py-3 px-4">Status</th>
+              </tr>
+            </thead>
+            <tbody id="seller-products-table-body" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sub-View 3: Orders & Fulfillment -->
+    <section id="seller-tab-orders" class="p-8 space-y-6 hidden">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Customer Orders & Dispatch</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Update shipping dispatch status and print courier labels</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Order ID</th>
+                <th class="py-3 px-4">Items</th>
+                <th class="py-3 px-4">Customer & Phone</th>
+                <th class="py-3 px-4">Delivery District</th>
+                <th class="py-3 px-4">Total (RWF)</th>
+                <th class="py-3 px-4">Fulfillment Action</th>
+              </tr>
+            </thead>
+            <tbody id="seller-orders-table-body" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sub-View 4: MoMo Payout Wallet -->
+    <section id="seller-tab-wallet" class="p-8 space-y-6 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Balance Card -->
+        <div class="md:col-span-1 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-semibold">Available MoMo Balance</span>
+              <i data-lucide="wallet" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-900">450,000 RWF</p>
+            
+            <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-600 space-y-1.5">
+              <div class="flex justify-between">
+                <span>Escrow Hold Balance:</span>
+                <strong class="text-slate-900">228,000 RWF</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Direct MoMo Number:</span>
+                <strong class="text-slate-900">+250 788 654 321</strong>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="document.getElementById('payout-amount-input').focus()" class="mt-6 w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+            <i data-lucide="arrow-down-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Request Instant Payout</span>
+          </button>
+        </div>
+
+        <!-- Payout Request Form -->
+        <div class="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 mb-1">Request Mobile Money / Bank Withdrawal</h3>
+          <p class="text-xs text-slate-500 mb-4">Funds are disbursed directly to your Rwanda registered account within 2 hours</p>
+
+          <form onsubmit="handleRequestPayout(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Withdrawal Amount (RWF)</label>
+                <input 
+                  type="number" 
+                  id="payout-amount-input"
+                  required
+                  min="5000"
+                  max="450000"
+                  value="150000" 
+                  class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none font-mono font-bold"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Payment Method</label>
+                <select id="payout-method-select" class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none font-medium">
+                  <option value="MTN Mobile Money">🟡 MTN Mobile Money (MoMo)</option>
+                  <option value="Airtel Money">🔴 Airtel Money</option>
+                  <option value="Bank of Kigali (BK)">🏦 Bank of Kigali (BK)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Account / Phone Number</label>
+                <input 
+                  type="text" 
+                  id="payout-account-input"
+                  required
+                  value="+250 788 654 321" 
+                  class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none font-medium"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Registered Account Name</label>
+                <input 
+                  type="text" 
+                  id="payout-name-input"
+                  required
+                  value="Kigali Urban Trends Ltd" 
+                  class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none font-medium"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="py-2.5 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-all flex items-center gap-2 shadow-sm">
+              <i data-lucide="send" class="w-4 h-4 text-emerald-400"></i>
+              <span>Submit Payout Request</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ADD PRODUCT MODAL -->
+  <div id="add-product-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">+ Add New Product Listing</h3>
+          <p class="text-xs text-slate-500">Publish item directly to the live Maicon storefront in RWF</p>
+        </div>
+        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateProduct(event)" class="space-y-4">
+        <!-- 1. Basic Info -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Title *</label>
+          <input 
+            type="text" 
+            id="new-prod-name" 
+            required 
+            placeholder="e.g. Classic Tailored Wool Blazer"
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Category Hub *</label>
+            <select id="new-prod-category" class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-medium">
+              <option value="fashion">Fashion & Downtown Style</option>
+              <option value="food-groceries">Food, Groceries & Agriculture</option>
+              <option value="events-weddings">Events, Parties & Weddings</option>
+              <option value="home-furniture">Home, Furniture & Lighting</option>
+              <option value="office-work">Office, Work & Business</option>
+              <option value="electronics">Electronics & Smart Tech</option>
+              <option value="health-medical">Health, Medical & Wellness</option>
+              <option value="construction-hardware">Construction, Tools & Hardware</option>
+              <option value="sports-toys-hobbies">Sports, Toys & Hobbies</option>
+              <option value="motors-mobility">Motors, Auto & City Mobility</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Brand Name *</label>
+            <input 
+              type="text" 
+              id="new-prod-brand" 
+              value="Kigali Urban" 
+              required
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+        </div>
+
+        <!-- 2. Pricing & Stock -->
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Selling Price (RWF) *</label>
+            <input 
+              type="number" 
+              id="new-prod-price" 
+              required 
+              placeholder="e.g. 45000"
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-mono font-bold"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Original Price (RWF)</label>
+            <input 
+              type="number" 
+              id="new-prod-original-price" 
+              placeholder="e.g. 58000"
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-mono font-medium"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Units *</label>
+            <input 
+              type="number" 
+              id="new-prod-stock" 
+              value="15" 
+              required
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+        </div>
+
+        <!-- 3. Device Photo Upload & Gallery -->
+        <div class="space-y-4 bg-slate-50/80 p-4 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="image" class="w-4 h-4 text-cyan-600"></i>
+              <span>Product Photos (Upload from Device) *</span>
+            </span>
+            <span class="text-[10px] text-slate-500 font-semibold">JPG, PNG, WEBP up to 25MB</span>
+          </div>
+
+          <!-- Main Featured Photo Upload Box -->
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1.5">Primary Hero Photo (Main Listing Image) *</label>
+            <input 
+              type="file" 
+              id="new-prod-file-main" 
+              accept="image/*" 
+              class="hidden" 
+              onchange="handleMainFileSelected(event)"
+            />
+            
+            <div 
+              id="main-upload-dropzone"
+              onclick="document.getElementById('new-prod-file-main').click()" 
+              class="border-2 border-dashed border-slate-300 hover:border-slate-900 bg-white hover:bg-slate-50/80 rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group">
+              <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 group-hover:scale-110 flex items-center justify-center transition-transform shadow-sm">
+                <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-800">Click or drag & drop photo from your device</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">High-resolution cover image for storefront & PDP</p>
+              </div>
+            </div>
+
+            <!-- Main Image Live Preview Card -->
+            <div id="main-image-preview-container" class="hidden mt-2 p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 shadow-sm">
+              <div class="flex items-center gap-3 min-w-0">
+                <img id="main-image-preview-img" src="" alt="Cover Preview" class="w-14 h-14 rounded-lg object-cover border border-slate-200" />
+                <div class="min-w-0">
+                  <p id="main-image-filename" class="text-xs font-bold text-slate-900 truncate">photo.jpg</p>
+                  <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <i data-lucide="check-circle" class="w-3 h-3"></i> Ready to publish
+                  </span>
+                </div>
+              </div>
+              <button type="button" onclick="removeMainSelectedFile()" class="px-2.5 py-1 text-xs font-semibold text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                Change Photo
+              </button>
+            </div>
+
+            <!-- Hidden field for fallback URL -->
+            <input type="hidden" id="new-prod-image" value="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700" />
+          </div>
+
+          <!-- Multi-Photo Gallery Upload Box -->
+          <div class="pt-2 border-t border-slate-200/80">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-semibold text-slate-700">Additional Gallery Photos (For PDP Multi-Angle Thumbnails)</label>
+              <button 
+                type="button" 
+                onclick="document.getElementById('new-prod-files-gallery').click()" 
+                class="text-xs font-bold text-cyan-700 hover:text-cyan-800 flex items-center gap-1">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                <span>+ Select Photos from Device</span>
+              </button>
+            </div>
+
+            <input 
+              type="file" 
+              id="new-prod-files-gallery" 
+              accept="image/*" 
+              multiple 
+              class="hidden" 
+              onchange="handleGalleryFilesSelected(event)"
+            />
+
+            <!-- Gallery Live Thumbnails Grid -->
+            <div id="gallery-previews-grid" class="flex items-center gap-2.5 flex-wrap min-h-[60px] p-2 bg-white rounded-xl border border-slate-200">
+              <div id="gallery-empty-placeholder" class="text-slate-400 text-xs flex items-center gap-2 py-2 px-1">
+                <i data-lucide="images" class="w-4 h-4 text-slate-300"></i>
+                <span class="text-[11px]">No extra gallery photos selected. Click "Select Photos" to add up to 5 angle shots.</span>
+              </div>
+            </div>
+
+            <!-- Hidden field for gallery URLs -->
+            <input type="hidden" id="new-prod-gallery" value="" />
+          </div>
+        </div>
+
+        <!-- 4. Variants: Sizes & Colors -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Available Sizes (comma separated)</label>
+            <input 
+              type="text" 
+              id="new-prod-sizes" 
+              value="S, M, L, XL" 
+              placeholder="S, M, L, XL or 41, 42, 43"
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Available Colors (comma separated)</label>
+            <input 
+              type="text" 
+              id="new-prod-colors" 
+              value="Black, Midnight Blue, Beige" 
+              placeholder="Black, Blue, White"
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+        </div>
+
+        <!-- 5. Product Description & Highlights -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Detailed Description (About this Product)</label>
+          <textarea 
+            id="new-prod-description" 
+            rows="3" 
+            placeholder="Describe the product materials, fit, benefits, and styling advice for buyers across Rwanda..."
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Key Highlights & Bullet Points (one per line)</label>
+          <textarea 
+            id="new-prod-highlights" 
+            rows="2" 
+            placeholder="100% Breathable cotton fabric&#10;Tailored slim modern cut&#10;Fast doorstep delivery in Kigali within 24 hours"
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+          ></textarea>
+        </div>
+
+        <!-- 6. Technical Specifications -->
+        <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200 space-y-3">
+          <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wider">Technical Specifications & Attributes</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Material / Composition</label>
+              <input 
+                type="text" 
+                id="new-prod-material" 
+                placeholder="e.g. Wool Blend & Satin" 
+                value="Premium Fabric Blend"
+                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none font-medium"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Warranty & Guarantee</label>
+              <input 
+                type="text" 
+                id="new-prod-warranty" 
+                placeholder="e.g. 12 Months Warranty" 
+                value="12 Months Quality Guarantee"
+                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none font-medium"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Country of Origin</label>
+              <input 
+                type="text" 
+                id="new-prod-origin" 
+                placeholder="e.g. Quality Certified Import" 
+                value="Quality Certified Import"
+                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none font-medium"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">SKU / Model Number</label>
+              <input 
+                type="text" 
+                id="new-prod-sku" 
+                placeholder="e.g. MC-RW-0025" 
+                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none font-mono font-medium"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeAddProductModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-colors shadow-sm">
+            Publish Product Listing
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Client Script -->
+  <script src="js/seller.js"></script>
+</body>
+</html>

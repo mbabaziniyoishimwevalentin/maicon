@@ -1,0 +1,29 @@
+{
+  "name": "maicon-ecommerce",
+  "version": "1.0.0",
+  "description": "Modern E-Commerce Storefront - Maicon",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "maicon",
+    "express",
+    "mysql",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^2.3.0",
+    "mysql2": "^3.9.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

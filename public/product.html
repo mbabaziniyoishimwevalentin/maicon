@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details | Maicon Rwanda</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .image-zoom-container:hover img {
+      transform: scale(1.08);
+    }
+    .thumb-active {
+      border-color: #0891b2 !important;
+      box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.2);
+    }
+    .variant-swatch-active {
+      border-color: #0f172a !important;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.3);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-slate-900 text-white text-[11px] py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
+    <span class="bg-cyan-500/20 text-cyan-300 font-bold px-2 py-0.5 rounded-full text-[10px] border border-cyan-400/30">🇷🇼 FAST DELIVERY</span>
+    <span>Free Doorstep Delivery in Kigali for orders over <strong>50,000 RWF</strong> · 100% Escrow Protected</span>
+  </div>
+
+  <!-- Header -->
+  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <span class="w-8 h-8 rounded-lg bg-slate-900 text-white font-black flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform">M</span>
+          <span class="font-bold text-lg tracking-tight text-slate-900">MAICON</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-4 text-xs font-semibold text-slate-500">
+          <a href="/" class="hover:text-slate-900 transition-colors">Storefront</a>
+          <span>/</span>
+          <span class="text-cyan-700 font-bold" id="header-category-label">Product Details</span>
+        </nav>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-md hidden sm:block">
+        <form onsubmit="handleHeaderSearch(event)" class="relative">
+          <input 
+            type="text" 
+            id="global-search-input"
+            placeholder="Search thousands of products in Rwanda..." 
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white rounded-xl py-2 pl-9 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-inner"
+          />
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+        </form>
+      </div>
+
+      <!-- Right Action Tools -->
+      <div class="flex items-center gap-3">
+        <!-- Currency Badge -->
+        <span class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700 border border-slate-200">
+          <span>🇷🇼</span>
+          <span>RWF</span>
+        </span>
+
+        <!-- Wishlist Button -->
+        <a href="/" title="Wishlist" class="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+          <i data-lucide="heart" class="w-5 h-5"></i>
+          <span id="header-wishlist-count" class="hidden absolute top-1 right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">0</span>
+        </a>
+
+        <!-- Cart Button -->
+        <button onclick="toggleCartDrawer()" class="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors flex items-center gap-1.5">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-slate-700"></i>
+          <span id="header-cart-count" class="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center shadow-sm">0</span>
+        </button>
+
+        <!-- User Profile / Login Link -->
+        <div id="header-user-container" class="flex items-center pl-2 border-l border-slate-200">
+          <a href="/login" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            <span>Sign In</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6">
+    
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-6 overflow-x-auto whitespace-nowrap">
+      <a href="/" class="hover:text-slate-900 flex items-center gap-1 transition-colors">
+        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+        <span>Home</span>
+      </a>
+      <span class="text-slate-300">/</span>
+      <a href="/" id="crumb-category" class="hover:text-slate-900 transition-colors">All Categories</a>
+      <span class="text-slate-300">/</span>
+      <span id="crumb-title" class="text-slate-900 font-bold truncate max-w-xs sm:max-w-md">Loading Product...</span>
+    </nav>
+
+    <!-- PRODUCT SHOWCASE SECTION (2 COLUMNS) -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        
+        <!-- LEFT COLUMN: GALLERY (5 COLS) -->
+        <div class="lg:col-span-6 flex flex-col-reverse sm:flex-row gap-4">
+          
+          <!-- Thumbnails Strip -->
+          <div id="pdp-thumbnails" class="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-[500px] flex-shrink-0">
+            <!-- Dynamically populated thumbnails -->
+          </div>
+
+          <!-- Main Hero Image Viewport -->
+          <div class="flex-1 relative rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 min-h-[380px] sm:min-h-[480px] flex items-center justify-center image-zoom-container group">
+            
+            <!-- Badges -->
+            <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+              <span id="pdp-new-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black bg-cyan-500 text-white uppercase tracking-wider shadow-sm">
+                + New Arrival
+              </span>
+              <span id="pdp-discount-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-500 text-white uppercase tracking-wider shadow-sm">
+                -18% OFF
+              </span>
+            </div>
+
+            <!-- Wishlist Button Over Image -->
+            <button 
+              id="pdp-wishlist-btn"
+              onclick="handlePdpWishlistToggle()" 
+              class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 text-slate-400 hover:text-rose-500 flex items-center justify-center shadow-md transition-all">
+              <i data-lucide="heart" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Main Image -->
+            <img 
+              id="pdp-main-image" 
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='1.5'%3E%3Crect width='18' height='18' x='3' y='3' rx='2' ry='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/%3E%3C/svg%3E" 
+              alt="Product Main View" 
+              class="w-full h-full max-h-[520px] object-contain object-center p-4 transition-transform duration-500"
+            />
+
+            <div class="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-[11px] text-slate-600 bg-white/90 backdrop-blur-md py-1.5 px-3 rounded-xl border border-slate-200 shadow-sm opacity-90">
+              <span class="flex items-center gap-1 font-semibold">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-600"></i>
+                <span>100% Genuine Quality</span>
+              </span>
+              <span class="font-mono text-slate-500 font-bold" id="pdp-image-counter">Photo 1 of 1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: PRODUCT INFO & BUY BOX (6 COLS) -->
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+          
+          <!-- Title, Brand & Ratings -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span id="pdp-brand" class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-black uppercase tracking-wider border border-slate-200">
+                MERCHANT
+              </span>
+              <span class="text-xs font-bold text-cyan-700 flex items-center gap-1">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cyan-600"></i>
+                <span>In Stock & Ready to Dispatch</span>
+              </span>
+            </div>
+
+            <h1 id="pdp-title" class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+              Loading Product Title...
+            </h1>
+
+            <!-- Ratings & Sales Social Proof -->
+            <div class="flex items-center gap-4 mt-3 text-xs flex-wrap">
+              <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg">
+                <div class="flex text-amber-400">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                </div>
+                <span id="pdp-rating-val" class="font-black text-amber-900">4.9</span>
+              </div>
+
+              <a href="#section-reviews" onclick="switchPdpTab('reviews')" class="text-slate-500 hover:text-slate-900 font-semibold underline decoration-slate-300">
+                <span id="pdp-review-count">128</span> Verified Reviews
+              </a>
+
+              <span class="text-slate-300">·</span>
+
+              <span class="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                <i data-lucide="flame" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>1,420+ Sold in Rwanda</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Price Section -->
+          <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-5 rounded-2xl text-white shadow-md flex items-center justify-between">
+            <div>
+              <div class="flex items-baseline gap-3">
+                <span id="pdp-price" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  -- RWF
+                </span>
+                <span id="pdp-original-price" class="text-sm font-semibold text-slate-400 line-through">
+                  -- RWF
+                </span>
+                <span id="pdp-price-discount-tag" class="px-2 py-0.5 bg-rose-500 text-white text-[10px] font-black rounded-md">
+                  SAVE 18%
+                </span>
+              </div>
+              <p class="text-[11px] text-cyan-300 font-medium mt-1">✓ Lowest Price Guarantee across Kigali · All taxes included</p>
+            </div>
+
+            <div class="text-right hidden sm:block">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block">Payment Options</span>
+              <span class="text-xs font-bold text-amber-400">MTN MoMo / Airtel / Card</span>
+            </div>
+          </div>
+
+          <!-- Short Description -->
+          <p id="pdp-description" class="text-xs text-slate-600 leading-relaxed">
+            Loading detailed product description...
+          </p>
+
+          <hr class="border-slate-100" />
+
+          <!-- Color Swatches -->
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-bold text-slate-900">Select Color:</span>
+              <span id="pdp-selected-color-label" class="font-bold text-cyan-700">Default</span>
+            </div>
+            <div id="pdp-color-swatches" class="flex items-center gap-2.5 flex-wrap">
+              <!-- Dynamically populated colors -->
+            </div>
+          </div>
+
+          <!-- Size / Variant Chips -->
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-bold text-slate-900">Select Size / Option:</span>
+              <button onclick="openSizeGuideModal()" class="text-cyan-700 hover:text-cyan-800 font-bold underline text-[11px] flex items-center gap-1">
+                <i data-lucide="ruler" class="w-3.5 h-3.5"></i>
+                <span>Size Guide</span>
+              </button>
+            </div>
+            <div id="pdp-size-chips" class="flex items-center gap-2 flex-wrap">
+              <!-- Dynamically populated sizes -->
+            </div>
+          </div>
+
+          <!-- Quantity Selector & Stock Alert -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-slate-900">Quantity:</span>
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden shadow-inner">
+                <button onclick="decrementQty()" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-200 text-sm font-bold transition-colors">
+                  -
+                </button>
+                <input 
+                  type="number" 
+                  id="pdp-qty-input" 
+                  value="1" 
+                  min="1" 
+                  max="99" 
+                  class="w-12 h-9 text-center bg-white border-x border-slate-200 font-bold text-xs text-slate-900 focus:outline-none" 
+                  readonly
+                />
+                <button onclick="incrementQty()" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-200 text-sm font-bold transition-colors">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="text-xs">
+              <span id="pdp-stock-alert" class="px-3 py-1.5 rounded-xl bg-red-50 text-red-600 font-bold border border-red-200 inline-block">
+                ⚡ Only 6 items left in Kigali Warehouse!
+              </span>
+            </div>
+          </div>
+
+          <!-- Primary Action Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button 
+              onclick="handlePdpAddToCart()" 
+              class="w-full py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]">
+              <i data-lucide="shopping-bag" class="w-4 h-4 text-cyan-400"></i>
+              <span>Add to Cart</span>
+            </button>
+
+            <button 
+              onclick="handlePdpBuyNow()" 
+              class="w-full py-3.5 px-6 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]">
+              <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i>
+              <span>Buy Now (Instant MoMo)</span>
+            </button>
+          </div>
+
+          <!-- Rwanda Delivery & Trust Guarantee Box -->
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-xs">
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="truck" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <strong class="text-slate-900 block">Fast Kigali & Regional Delivery</strong>
+                <p class="text-slate-500 text-[11px] mt-0.5">Estimated doorstep arrival: <strong>Tomorrow, 24-48 Hours</strong> across Rwanda.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <strong class="text-slate-900 block">100% Escrow Protection Guarantee</strong>
+                <p class="text-slate-500 text-[11px] mt-0.5">Funds held securely in Rwandan Francs until you confirm delivery satisfaction.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <strong class="text-slate-900 block">7-Day Hassle-Free Returns</strong>
+                <p class="text-slate-500 text-[11px] mt-0.5">Full refund or instant replacement if not 100% as described.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seller Info Card -->
+          <div class="flex items-center justify-between p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                🏬
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span id="pdp-seller-name" class="font-bold text-xs text-slate-900">Kigali Urban Trends</span>
+                  <span class="px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700 text-[9px] font-bold border border-cyan-200">Verified ✓</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-0.5">4.9 ★ Store Rating · 99% Positive Feedback · Kigali CBD</p>
+              </div>
+            </div>
+
+            <a href="/" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-all border border-slate-200">
+              Visit Store
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS SECTION: SPECIFICATIONS, REVIEWS, DETAILS, SHIPPING -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
+      
+      <!-- Tab Header Bar -->
+      <div class="flex border-b border-slate-200 overflow-x-auto bg-slate-50/50">
+        <button 
+          onclick="switchPdpTab('description')" 
+          id="tab-btn-description" 
+          class="pdp-tab-btn py-4 px-6 text-xs font-bold text-slate-900 border-b-2 border-slate-900 flex items-center gap-2 transition-all flex-shrink-0">
+          <i data-lucide="file-text" class="w-4 h-4 text-cyan-600"></i>
+          <span>Description & Highlights</span>
+        </button>
+
+        <button 
+          onclick="switchPdpTab('specs')" 
+          id="tab-btn-specs" 
+          class="pdp-tab-btn py-4 px-6 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-900 flex items-center gap-2 transition-all flex-shrink-0">
+          <i data-lucide="list-checks" class="w-4 h-4 text-slate-400"></i>
+          <span>Technical Specifications</span>
+        </button>
+
+        <button 
+          onclick="switchPdpTab('reviews')" 
+          id="tab-btn-reviews" 
+          class="pdp-tab-btn py-4 px-6 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-900 flex items-center gap-2 transition-all flex-shrink-0">
+          <i data-lucide="star" class="w-4 h-4 text-slate-400"></i>
+          <span>Customer Reviews (4.9 ★)</span>
+        </button>
+
+        <button 
+          onclick="switchPdpTab('shipping')" 
+          id="tab-btn-shipping" 
+          class="pdp-tab-btn py-4 px-6 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-900 flex items-center gap-2 transition-all flex-shrink-0">
+          <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
+          <span>Rwanda Delivery & MoMo Escrow</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="p-6 sm:p-8">
+        
+        <!-- TAB 1: DESCRIPTION & HIGHLIGHTS -->
+        <div id="pdp-tab-content-description" class="pdp-tab-panel space-y-6">
+          <div class="max-w-3xl space-y-4">
+            <h3 class="text-sm font-bold text-slate-900">About this product</h3>
+            <p id="pdp-tab-description-text" class="text-xs text-slate-600 leading-relaxed">
+              Loading details...
+            </p>
+
+            <h4 class="text-xs font-bold text-slate-900 pt-2">Key Highlights & Features:</h4>
+            <ul id="pdp-highlights-list" class="space-y-2.5 text-xs text-slate-600">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- TAB 2: TECHNICAL SPECIFICATIONS -->
+        <div id="pdp-tab-content-specs" class="pdp-tab-panel space-y-4 hidden">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Detailed Specifications & Attributes</h3>
+          <div class="max-w-3xl overflow-hidden rounded-xl border border-slate-200">
+            <table class="w-full text-left text-xs">
+              <tbody id="pdp-specs-tbody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated table rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: CUSTOMER REVIEWS -->
+        <div id="pdp-tab-content-reviews" class="pdp-tab-panel space-y-8 hidden">
+          
+          <!-- Rating Summary Box -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-slate-50 rounded-2xl border border-slate-200">
+            <div class="flex flex-col items-center justify-center text-center md:border-r border-slate-200 pr-4">
+              <span class="text-4xl font-black text-slate-900">4.9</span>
+              <div class="flex text-amber-400 my-1">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              </div>
+              <span class="text-xs text-slate-500 font-semibold">Based on 128 Verified Ratings</span>
+            </div>
+
+            <!-- Breakdown Bars -->
+            <div class="md:col-span-2 space-y-2 text-xs">
+              <div class="flex items-center gap-3">
+                <span class="w-12 text-slate-600 font-semibold">5 Stars</span>
+                <div class="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div class="bg-amber-400 h-full rounded-full" style="width: 88%"></div>
+                </div>
+                <span class="w-10 text-right text-slate-500 font-bold">88%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-12 text-slate-600 font-semibold">4 Stars</span>
+                <div class="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div class="bg-amber-400 h-full rounded-full" style="width: 10%"></div>
+                </div>
+                <span class="w-10 text-right text-slate-500 font-bold">10%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-12 text-slate-600 font-semibold">3 Stars</span>
+                <div class="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div class="bg-amber-400 h-full rounded-full" style="width: 2%"></div>
+                </div>
+                <span class="w-10 text-right text-slate-500 font-bold">2%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reviews List -->
+          <div id="pdp-reviews-list" class="space-y-6">
+            <!-- Dynamically populated customer review cards -->
+          </div>
+        </div>
+
+        <!-- TAB 4: SHIPPING & RWANDA ESCROW -->
+        <div id="pdp-tab-content-shipping" class="pdp-tab-panel space-y-6 hidden">
+          <div class="max-w-3xl space-y-4 text-xs text-slate-600 leading-relaxed">
+            <h3 class="text-sm font-bold text-slate-900">Delivery Information for Rwanda 🇷🇼</h3>
+            <p>
+              Maicon partners with <strong>Kigali Speed Logistics</strong> to provide rapid doorstep delivery across the City of Kigali (Nyarugenge, Gasabo, Kicukiro) and regional districts (Musanze, Rubavu, Huye, Rwamagana, Rusizi, Nyagatare).
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <strong class="text-slate-900 block mb-1">📍 Kigali City Delivery</strong>
+                <p class="text-slate-500">Same-day or next-day delivery within 24 hours. Orders placed before 2:00 PM are dispatched same afternoon.</p>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <strong class="text-slate-900 block mb-1">🌍 Upcountry & Regional Rwanda</strong>
+                <p class="text-slate-500">Delivered within 48 hours to major provincial transit hubs and doorstep pickup points.</p>
+              </div>
+            </div>
+
+            <h3 class="text-sm font-bold text-slate-900 pt-4">How MoMo Escrow Works</h3>
+            <p>
+              When you pay using MTN Mobile Money, Airtel Money, or Debit Card, your payment is held securely in the Maicon Rwanda Escrow vault. The seller only receives payout after you receive and inspect your package.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RELATED PRODUCTS SECTION -->
+    <div class="mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-lg font-black text-slate-900">You May Also Like</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Explore similar high-quality products curated for you</p>
+        </div>
+        <a href="/" class="text-xs font-bold text-cyan-700 hover:text-cyan-800 flex items-center gap-1">
+          <span>View Storefront</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <div id="pdp-related-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Dynamically populated related product cards -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Mobile Action Bar -->
+  <div class="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 p-3 z-30 shadow-2xl flex items-center gap-3">
+    <div class="flex-1 min-w-0">
+      <span class="text-[10px] text-slate-400 block uppercase font-bold">Total Price</span>
+      <span id="pdp-mobile-price" class="text-sm font-black text-slate-900 truncate">-- RWF</span>
+    </div>
+    <button 
+      onclick="handlePdpAddToCart()" 
+      class="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-md">
+      <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-cyan-400"></i>
+      <span>Add to Cart</span>
+    </button>
+    <button 
+      onclick="handlePdpBuyNow()" 
+      class="px-4 py-2.5 rounded-xl bg-cyan-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-md">
+      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-300"></i>
+      <span>Buy Now</span>
+    </button>
+  </div>
+
+  <!-- Size Guide Modal -->
+  <div id="size-guide-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="ruler" class="w-4 h-4 text-cyan-600"></i>
+          <span>Official Size & Dimension Guide</span>
+        </h3>
+        <button onclick="closeSizeGuideModal()" class="text-slate-400 hover:text-slate-900 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500">All measurements are standard international sizes tailored for comfort.</p>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+            <tr>
+              <th class="p-2.5">Size</th>
+              <th class="p-2.5">Chest / Width</th>
+              <th class="p-2.5">Length</th>
+              <th class="p-2.5">Fit Recommendation</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-600">
+            <tr>
+              <td class="p-2.5 font-bold text-slate-900">S (Small)</td>
+              <td class="p-2.5">92 - 96 cm</td>
+              <td class="p-2.5">68 cm</td>
+              <td class="p-2.5">Slim / Standard Fit</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold text-slate-900">M (Medium)</td>
+              <td class="p-2.5">96 - 102 cm</td>
+              <td class="p-2.5">70 cm</td>
+              <td class="p-2.5">Regular Comfort Fit</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold text-slate-900">L (Large)</td>
+              <td class="p-2.5">102 - 108 cm</td>
+              <td class="p-2.5">73 cm</td>
+              <td class="p-2.5">Relaxed Fit</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold text-slate-900">XL (X-Large)</td>
+              <td class="p-2.5">108 - 116 cm</td>
+              <td class="p-2.5">76 cm</td>
+              <td class="p-2.5">Comfort / Oversized</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button onclick="closeSizeGuideModal()" class="w-full py-2.5 bg-slate-900 text-white font-bold rounded-xl text-xs">
+        Got it, Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Instant Checkout Modal (MoMo / Card) -->
+  <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-cyan-600"></i>
+            <span>Instant Rwanda Checkout</span>
+          </h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Secure MTN MoMo & Card payment</p>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-900 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+        <img id="checkout-item-img" src="" alt="Product" class="w-12 h-12 rounded-lg object-cover border border-slate-200" />
+        <div class="flex-1 min-w-0">
+          <h4 id="checkout-item-title" class="text-xs font-bold text-slate-900 truncate">Product Name</h4>
+          <p id="checkout-item-variant" class="text-[10px] text-slate-500">Color: Beige · Size: L · Qty: 1</p>
+          <span id="checkout-item-price" class="text-xs font-black text-cyan-700 block mt-0.5">-- RWF</span>
+        </div>
+      </div>
+
+      <!-- Checkout Form -->
+      <form onsubmit="handleExecuteInstantCheckout(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Recipient Name</label>
+          <input 
+            type="text" 
+            id="checkout-name" 
+            required 
+            placeholder="Full Name" 
+            value="Jean-Paul Mugisha" 
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Phone (MoMo / Airtel)</label>
+            <input 
+              type="text" 
+              id="checkout-phone" 
+              required 
+              value="+250 788 998 877" 
+              class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">District</label>
+            <select id="checkout-district" class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-medium">
+              <option value="Nyarugenge">Kigali - Nyarugenge</option>
+              <option value="Gasabo">Kigali - Gasabo</option>
+              <option value="Kicukiro">Kigali - Kicukiro</option>
+              <option value="Musanze">Musanze</option>
+              <option value="Rubavu">Rubavu</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Street Address</label>
+          <input 
+            type="text" 
+            id="checkout-address" 
+            required 
+            placeholder="KG 9 Ave, House #24, Kigali" 
+            value="KG 9 Ave, House #24, Nyarugenge" 
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none font-medium"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Payment Method</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex items-center justify-center p-2 rounded-xl border border-cyan-500 bg-cyan-50/50 text-slate-900 text-xs font-bold cursor-pointer">
+              <input type="radio" name="pay_channel" value="MTN Mobile Money" checked class="hidden" />
+              <span>📱 MTN MoMo</span>
+            </label>
+            <label class="flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-slate-700 text-xs font-bold cursor-pointer">
+              <input type="radio" name="pay_channel" value="Airtel Money" class="hidden" />
+              <span>🔴 Airtel Money</span>
+            </label>
+            <label class="flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-slate-700 text-xs font-bold cursor-pointer">
+              <input type="radio" name="pay_channel" value="Card / Visa" class="hidden" />
+              <span>💳 Bank Card</span>
+            </label>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="checkout-submit-btn" 
+          class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2 mt-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+          <span id="checkout-btn-text">Confirm & Pay with MoMo</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cart Drawer Component -->
+  <div id="cart-drawer-overlay" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col justify-between p-6">
+      
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-cyan-600"></i>
+          <h3 class="text-base font-black text-slate-900">Your Shopping Cart</h3>
+        </div>
+        <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-slate-900 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Items List -->
+      <div id="cart-drawer-items" class="flex-1 overflow-y-auto py-4 space-y-3">
+        <!-- Cart items populated via JS -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="pt-4 border-t border-slate-100 space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-500 font-semibold">Subtotal</span>
+          <span id="cart-drawer-subtotal" class="font-black text-slate-900 text-base">0 RWF</span>
+        </div>
+        <button onclick="openCartCheckout()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all">
+          <span>Proceed to Checkout</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-slate-200 bg-white text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs">M</span>
+        <span class="font-bold text-slate-900">MAICON RWANDA</span>
+        <span>© 2026. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-600 font-medium">
+        <a href="/" class="hover:text-slate-900">Storefront</a>
+        <a href="/account" class="hover:text-slate-900">My Orders</a>
+        <a href="/login" class="hover:text-slate-900">Merchant Portal</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/product.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In & Portal Gateway | Maicon</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-slate-900 min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+
+  <!-- Top Navigation -->
+  <header class="w-full py-4 px-6 sm:px-12 flex items-center justify-between border-b border-slate-200 bg-white sticky top-0 z-30">
+    <a href="/" class="flex items-center gap-2.5 text-xl sm:text-2xl font-black tracking-tight text-slate-900 group">
+      <span class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-black group-hover:scale-105 transition-transform text-sm">M</span>
+      <span>MAICON</span>
+    </a>
+
+    <a href="/" class="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-3.5 py-2 rounded-xl transition-all">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      <span>Back to Store</span>
+    </a>
+  </header>
+
+  <!-- Auth Main Container -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12 bg-slate-50/50">
+    <div class="w-full max-w-md bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-200/40 p-6 sm:p-8">
+      
+      <!-- Heading -->
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">Sign In to Maicon</h1>
+        <p class="text-xs text-slate-500 mt-1">Enter your credentials to access your dedicated portal</p>
+      </div>
+
+      <!-- Error / Alert Banner (Hidden by default) -->
+      <div id="auth-alert" class="hidden mb-5 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium flex items-center gap-2">
+        <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 flex-shrink-0"></i>
+        <span id="auth-alert-message">Invalid credentials.</span>
+      </div>
+
+      <!-- Tabs: Sign In / Register -->
+      <div class="flex border-b border-slate-200 mb-6">
+        <button 
+          id="tab-btn-signin" 
+          onclick="switchTab('signin')" 
+          class="flex-1 py-2.5 text-center text-xs font-bold text-slate-900 border-b-2 border-slate-900 transition-colors">
+          Sign In
+        </button>
+        <button 
+          id="tab-btn-register" 
+          onclick="switchTab('register')" 
+          class="flex-1 py-2.5 text-center text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-700 transition-colors">
+          Customer Registration
+        </button>
+      </div>
+
+      <!-- Form 1: Sign In -->
+      <form id="signin-form" onsubmit="handleSignIn(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+            <input 
+              type="email" 
+              id="signin-email" 
+              required
+              class="w-full bg-slate-50 hover:bg-slate-100/60 focus:bg-white border border-slate-200 focus:border-slate-900 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all font-medium"
+              placeholder="e.g. admin@maicon.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-slate-700">Password</label>
+          </div>
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+            <input 
+              type="password" 
+              id="signin-password" 
+              required
+              placeholder="••••••••••••"
+              class="w-full bg-slate-50 hover:bg-slate-100/60 focus:bg-white border border-slate-200 focus:border-slate-900 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all font-medium"
+            />
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="signin-submit-btn"
+          class="w-full py-3 bg-slate-900 hover:bg-slate-800 active:bg-black text-white rounded-xl text-xs font-bold shadow-md shadow-slate-900/15 transition-all flex items-center justify-center gap-2 mt-2">
+          <span id="btn-text">Sign In & Open Dashboard</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-cyan-400"></i>
+        </button>
+      </form>
+
+      <!-- Form 2: Register Customer -->
+      <form id="register-form" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+          <input 
+            type="text" 
+            id="reg-name" 
+            required
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 font-medium"
+            placeholder="Jean-Paul Mugisha"
+          />
+        </div>
+
+        <div class="bg-cyan-50/80 p-3 rounded-xl border border-cyan-200 text-xs text-slate-700">
+          <p class="font-bold text-cyan-900 flex items-center gap-1.5 mb-0.5">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-cyan-700"></i>
+            <span>Customer Account Registration</span>
+          </p>
+          <p class="text-[11px] text-slate-600">Create your shopping account to track deliveries in Rwanda. <em>(Note: Merchant and Seller stores are onboarded by Administration).</em></p>
+        </div>
+        <input type="hidden" id="reg-role" value="buyer" />
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+          <input 
+            type="email" 
+            id="reg-email" 
+            required
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 font-medium"
+            placeholder="you@maicon.com"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Create Password</label>
+          <input 
+            type="password" 
+            id="reg-password" 
+            required
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 font-medium"
+            placeholder="••••••••••••"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Phone Number (Rwanda)</label>
+          <input 
+            type="text" 
+            id="reg-phone" 
+            required
+            class="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 font-medium"
+            placeholder="+250 788 000 000"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2">
+          <span>Create Account</span>
+          <i data-lucide="check" class="w-4 h-4 text-cyan-400"></i>
+        </button>
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-slate-500 border-t border-slate-200 bg-white">
+    © 2026 Maicon Inc. Dedicated Portals Architecture. Currency in RWF.
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    function showAlert(msg) {
+      const alertEl = document.getElementById('auth-alert');
+      const msgEl = document.getElementById('auth-alert-message');
+      msgEl.textContent = msg;
+      alertEl.classList.remove('hidden');
+    }
+
+    function hideAlert() {
+      const alertEl = document.getElementById('auth-alert');
+      alertEl.classList.add('hidden');
+    }
+
+    function switchTab(tab) {
+      hideAlert();
+      const isSignIn = tab === 'signin';
+      document.getElementById('signin-form').classList.toggle('hidden', !isSignIn);
+      document.getElementById('register-form').classList.toggle('hidden', isSignIn);
+
+      document.getElementById('tab-btn-signin').className = isSignIn
+        ? 'flex-1 py-2.5 text-center text-xs font-bold text-slate-900 border-b-2 border-slate-900 transition-colors'
+        : 'flex-1 py-2.5 text-center text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-700 transition-colors';
+
+      document.getElementById('tab-btn-register').className = !isSignIn
+        ? 'flex-1 py-2.5 text-center text-xs font-bold text-slate-900 border-b-2 border-slate-900 transition-colors'
+        : 'flex-1 py-2.5 text-center text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-700 transition-colors';
+    }
+
+    async function handleSignIn(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const email = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+      const btnText = document.getElementById('btn-text');
+
+      if (!email || !password) {
+        showAlert('Please enter both email and password.');
+        return;
+      }
+
+      btnText.textContent = 'Verifying credentials...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (data.success && data.redirectUrl) {
+          localStorage.setItem('maicon_user', JSON.stringify(data.user));
+          // Direct role-based redirection to the appropriate portal dashboard
+          window.location.href = data.redirectUrl;
+        } else {
+          btnText.textContent = 'Sign In & Open Dashboard';
+          showAlert(data.message || 'Invalid email or password.');
+        }
+      } catch (err) {
+        console.error('Sign in error', err);
+        btnText.textContent = 'Sign In & Open Dashboard';
+        showAlert('Network error connecting to the authentication server.');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const name = document.getElementById('reg-name').value.trim();
+      const role = document.getElementById('reg-role').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const phone = document.getElementById('reg-phone').value.trim();
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role, email, password, phone })
+        });
+        const data = await res.json();
+
+        if (data.success && data.redirectUrl) {
+          localStorage.setItem('maicon_user', JSON.stringify(data.user));
+          window.location.href = data.redirectUrl;
+        } else {
+          showAlert(data.message || 'Registration failed.');
+        }
+      } catch (err) {
+        console.error('Register error', err);
+        showAlert('Error during registration.');
+      }
+    }
+  </script>
+</body>
+</html>
